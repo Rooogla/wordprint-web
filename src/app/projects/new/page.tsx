@@ -16,10 +16,12 @@ export default function NewProject() {
   const [type, setType] = useState("MANUAL");
   const [blogUrl, setBlogUrl] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
     try {
       const project = await createProject({
         name,
@@ -30,6 +32,7 @@ export default function NewProject() {
       router.push(`/projects/${project.id}`);
     } catch (err) {
       console.error(err);
+      setError(err instanceof Error ? err.message : "Unbekannter Fehler");
       setLoading(false);
     }
   };
@@ -37,6 +40,12 @@ export default function NewProject() {
   return (
     <div className="max-w-xl mx-auto">
       <h1 className="font-heading text-3xl font-bold tracking-tight mb-6">Neues Projekt</h1>
+
+      {error && (
+        <div className="bg-destructive/10 text-destructive rounded-md p-3 mb-4 text-sm">
+          {error}
+        </div>
+      )}
 
       <Card>
         <CardContent className="pt-6">
